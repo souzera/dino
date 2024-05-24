@@ -7,14 +7,13 @@ import (
 	"gorm.io/gorm"
 )
 
+//TODO: Adicionar criptografia de senha
 type Usuario struct {
 	gorm.Model
 	ID uuid.UUID `gorm:"type:uuid;primary_key;default:uuid_generate_v4()" json:"id,omitempty"`
 	Login	string `gorm:"unique" json:"login"`
 	Email	string `json:"email"`
 	Senha	string `json:"-"`
-	OwnerID uuid.UUID `json:"owner_id,omitempty"`
-	OwnerType string `json:"owner_type,omitempty"`
 }
 
 type Gerencia struct {
@@ -49,21 +48,24 @@ type Turma struct {
 type Diretor struct {
 	gorm.Model
 	ID uuid.UUID `gorm:"type:uuid;primary_key;default:uuid_generate_v4()" json:"id,omitempty"`
-	Usuario Usuario `gorm:"polymorphic:Owner;" json:"usuario"`
+	Usuario Usuario `gorm:"foreignkey:ID;" json:"usuario"`
+	UsuarioID uuid.UUID `json:"usuario_id,omitempty"`
 	Nome string `json:"nome"`
 }
 
 type Educador struct {
 	gorm.Model
 	ID uuid.UUID `gorm:"type:uuid;primary_key;default:uuid_generate_v4()" json:"id,omitempty"`
-	Usuario Usuario `gorm:"polymorphic:Owner;" json:"usuario"`
+	Usuario Usuario `gorm:"foreignkey:ID;" json:"usuario"`
+	UsuarioID uuid.UUID `json:"usuario_id,omitempty"`
 	Nome string `json:"nome"`
 }
 
 type Aluno struct {
 	gorm.Model
 	ID uuid.UUID `gorm:"type:uuid;primary_key;default:uuid_generate_v4()" json:"id,omitempty"`
-	Usuario Usuario `gorm:"polymorphic:Owner;" json:"usuario"`
+	Usuario Usuario `gorm:"foreignkey:ID;" json:"usuario"`
+	UsuarioID uuid.UUID `json:"usuario_id,omitempty"`
 	Nome string `json:"nome"`
 }
 
