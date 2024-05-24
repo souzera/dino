@@ -8,31 +8,77 @@ import (
 )
 
 func ListarUsuarios(contexto *gin.Context) {
-	contexto.JSON(http.StatusOK, gin.H{
-		"usuarios": "GET lista de usuarios",
-	})
-}
 
-func CriarUsuario(contexto *gin.Context) {
-	request := struct{
-		Login string `json:"login"`
-		Email string `json:"email"`
-		Senha string `json:"senha"`
-	}{}
+	usuarios := []schemas.Usuario{}
 
-	contexto.BindJSON(&request)
-
-
-	usuario := schemas.Usuario{Login: request.Login, Email: request.Email, Senha: request.Senha}
-
-	logger.Infof("Criando usuario: %v", request.Email)
-
-	if err := db.Create(&usuario).Error; err != nil {
-		logger.Errorf("Erro ao criar usuario: %v", err)
+	if err := db.Find(&usuarios).Error; err != nil {
+		sendError(contexto, http.StatusInternalServerError, "Erro ao buscar usuarios")
 		return
 	}
 
+	sendSucess(contexto, "listar-usuarios", usuarios)
 }
+
+type ListarUsuariosResponse struct {
+	Message string `json:"message"`
+	Data []schemas.UsuarioResponse `json:"data"`
+}
+
+// CRIAR USUARIO
+
+func CriarUsuario(contexto *gin.Context) {
+	request := CriarUsuarioRequest{}
+
+	contexto.BindJSON(&request)
+
+	if err := validarCriarUsuarioRequest(request); err != nil{
+		logger.Infof("request: %v", request)
+		logger.Errorf("Erro ao validar request: %v", err)
+		sendError(contexto, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	usuario := schemas.Usuario{
+		Login: request.Login, 
+		Email: request.Email, 
+		Senha: request.Senha,
+	}
+
+	if err := db.Create(&usuario).Error; err != nil {
+		logger.Errorf("Erro ao criar usuario: %v", err)
+		sendError(contexto, http.StatusInternalServerError, "Erro ao criar usuario")
+		return
+	}
+
+	sendSucess(contexto, "criar-usuario", usuario)
+}
+
+type CriarUsuarioRequest struct {
+	Login string `json:"login"`
+	Email string `json:"email"`
+	Senha string `json:"senha"`
+}
+
+func validarCriarUsuarioRequest(request CriarUsuarioRequest) error{
+	if request.Login == "" {return errorParamRequired("login")}
+	if request.Email == "" {return errorParamRequired("email")}
+	if request.Senha == "" {return errorParamRequired("senha")}
+	
+	if query := db.Where("login = ?", request.Login).Or("email = ?", request.Email).First(&schemas.Usuario{}); query != nil {
+		// TODO: tratar login e email em linhas separadas
+		return errorUniqueViolation("login")
+	}
+
+	return nil
+}
+
+type CriarUsuarioResponse struct {
+	Message string `json:"message"`
+	Data schemas.UsuarioResponse `json:"data"`
+}
+
+
+// BUSCAR USUARIO
 
 func BuscarUsuario(contexto *gin.Context) {
 	contexto.JSON(http.StatusOK, gin.H{
@@ -51,4 +97,3 @@ func DeletarUsuario(contexto *gin.Context) {
 		"usuarios": "DELETE deletar usuario",
 	})
 }
-

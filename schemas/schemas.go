@@ -12,7 +12,7 @@ type Usuario struct {
 	gorm.Model
 	ID uuid.UUID `gorm:"type:uuid;primary_key;default:uuid_generate_v4()" json:"id,omitempty"`
 	Login	string `gorm:"unique" json:"login"`
-	Email	string `json:"email"`
+	Email	string `gorm:"unique" json:"email"`
 	Senha	string `json:"-"`
 }
 
