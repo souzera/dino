@@ -13,9 +13,13 @@ func ListarUsuarios(contexto *gin.Context) {
 }
 
 func CriarUsuario(contexto *gin.Context) {
-	contexto.JSON(http.StatusOK, gin.H{
-		"usuarios": "GET lista de usuarios",
-	})
+	request := struct{
+		Login string `json:"login"`
+	}{}
+
+	contexto.BindJSON(&request)
+
+	logger.Infof("Login: %+v", request)
 }
 
 func BuscarUsuario(contexto *gin.Context) {
