@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/souzera/dino/schemas"
 )
 
 func ListarUsuarios(contexto *gin.Context) {
@@ -15,11 +16,22 @@ func ListarUsuarios(contexto *gin.Context) {
 func CriarUsuario(contexto *gin.Context) {
 	request := struct{
 		Login string `json:"login"`
+		Email string `json:"email"`
+		Senha string `json:"senha"`
 	}{}
 
 	contexto.BindJSON(&request)
 
-	logger.Infof("Login: %+v", request)
+
+	usuario := schemas.Usuario{Login: request.Login, Email: request.Email, Senha: request.Senha}
+
+	logger.Infof("Criando usuario: %v", request.Email)
+
+	if err := db.Create(&usuario).Error; err != nil {
+		logger.Errorf("Erro ao criar usuario: %v", err)
+		return
+	}
+
 }
 
 func BuscarUsuario(contexto *gin.Context) {

@@ -48,25 +48,26 @@ type Turma struct {
 type Diretor struct {
 	gorm.Model
 	ID uuid.UUID `gorm:"type:uuid;primary_key;default:uuid_generate_v4()" json:"id,omitempty"`
-	Usuario Usuario `gorm:"foreignkey:ID;" json:"usuario"`
-	UsuarioID uuid.UUID `json:"usuario_id,omitempty"`
+	Usuario Usuario `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE" json:"usuario"`
+	UsuarioID uuid.UUID `gorm:"type:uuid;not null" json:"usuario_id,omitempty"`
 	Nome string `json:"nome"`
 }
 
 type Educador struct {
 	gorm.Model
 	ID uuid.UUID `gorm:"type:uuid;primary_key;default:uuid_generate_v4()" json:"id,omitempty"`
-	Usuario Usuario `gorm:"foreignkey:ID;" json:"usuario"`
-	UsuarioID uuid.UUID `json:"usuario_id,omitempty"`
+	Usuario Usuario `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE" json:"usuario"`
+	UsuarioID uuid.UUID `gorm:"type:uuid,not null" json:"usuario_id,omitempty"`
 	Nome string `json:"nome"`
 }
 
 type Aluno struct {
 	gorm.Model
 	ID uuid.UUID `gorm:"type:uuid;primary_key;default:uuid_generate_v4()" json:"id,omitempty"`
-	Usuario Usuario `gorm:"foreignkey:ID;" json:"usuario"`
-	UsuarioID uuid.UUID `json:"usuario_id,omitempty"`
+	Usuario Usuario `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE" json:"usuario"`
+	UsuarioID uuid.UUID `gorm:"type:uuid;not null" json:"usuario_id,omitempty"`
 	Nome string `json:"nome"`
+	Ano int `json:"ano"`
 }
 
 type Disciplina struct {
