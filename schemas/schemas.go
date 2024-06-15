@@ -56,7 +56,7 @@ type Diretor struct {
 type Educador struct {
 	gorm.Model
 	ID uuid.UUID `gorm:"type:uuid;primary_key;default:uuid_generate_v4()" json:"id,omitempty"`
-	Usuario Usuario `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE" json:"usuario"`
+	Usuario Usuario `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;serializer:json" json:"usuario"`
 	UsuarioID uuid.UUID `gorm:"type:uuid,not null" json:"usuario_id,omitempty"`
 	Nome string `json:"nome"`
 }
