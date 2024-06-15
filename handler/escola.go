@@ -4,12 +4,24 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/souzera/dino/schemas"
 )
 
 func ListarEscolas(contexto *gin.Context) {
-	contexto.JSON(http.StatusOK, gin.H{
-		"escolas": "GET lista de escolas",
-	})
+	
+	escolas := []schemas.Escola{}
+
+	if err := db.Find(&escolas).Error; err != nil {
+		sendError(contexto, http.StatusInternalServerError, "Erro ao buscar escolas")
+		return
+	}
+
+	sendSucess(contexto, "listar-escolas", escolas)
+}
+
+type ListarEscolasResponse struct {
+	Message string `json:"message"`
+	Data []schemas.EscolaResponse `json:"data"`
 }
 
 func CriarEscola(contexto *gin.Context) {
