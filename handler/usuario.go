@@ -89,7 +89,7 @@ func BuscarUsuario(contexto *gin.Context) {
 
 	id := contexto.Param("id")
 
-	if err := db.First(&usuario).Where("id = ?", id); err != nil {
+	if err := db.Find(&usuario).Where("id = ?", id).Error; err != nil {
 		sendError(contexto, http.StatusInternalServerError, "Erro ao buscar usuario")
 		return
 	}
