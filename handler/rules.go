@@ -9,3 +9,7 @@ func errorParamRequired(param string) error {
 func errorUniqueViolation(param string) error {
 	return fmt.Errorf("parametro %s já existe", param)
 }
+
+func errorNotFound(param string) error {
+	return fmt.Errorf("parametro %s não encontrado", param)
+}

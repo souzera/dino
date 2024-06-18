@@ -81,24 +81,24 @@ type CriarUsuarioResponse struct {
 }
 
 
-// BUSCAR USUARIO
+// BUSCAR USUARIO POR ID
 
 func BuscarUsuario(contexto *gin.Context) {
+
+	uuid, err := uuid.Parse(contexto.Param("id"))
+	if err != nil {
+		sendError(contexto, http.StatusBadRequest, "ID inválido")
+		return
+	}
 	
-	usuario := schemas.Usuario{}
+	usuario := schemas.Usuario{ID: uuid}
 
-	id := contexto.Param("id")
-
-	if err := db.Find(&usuario).Where("id = ?", id).Error; err != nil {
+	if err := db.First(&usuario).Error; err != nil {
 		sendError(contexto, http.StatusInternalServerError, "Erro ao buscar usuario")
 		return
 	}
 
 	sendSucess(contexto, "buscar-usuario", usuario)
-}
-
-type BuscarUsuarioRequest struct {
-	ID uuid.UUID `json:"id"`
 }
 
 func AtualizarUsuario(contexto *gin.Context) {
