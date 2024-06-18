@@ -24,16 +24,5 @@ func initializeRoutes(router *gin.Engine){
 		v1.POST("/usuarios", handler.CriarUsuario)
 		v1.PUT("/usuarios/:id", handler.AtualizarUsuario)
 		v1.DELETE("/usuarios/:id", handler.DeletarUsuario)
-
-		// GRE
-		v1.GET("/gre", handler.ListarGre)
-		v1.GET("/gre/:id", handler.BuscarGre)
-		v1.POST("/gre", handler.CriarGre)
-		v1.PUT("/gre/:id", handler.AtualizarGre)
-		v1.DELETE("/gre/:id", handler.DeletarGre)
-
-		// EDUCADORES
-		v1.GET("/educadores", handler.ListarEducadores)
-		v1.POST("/educadores", handler.CriarEducador)
 	}
 }

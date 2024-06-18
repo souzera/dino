@@ -4,8 +4,11 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 	"github.com/souzera/dino/schemas"
 )
+
+// LISTAR USUARIOS
 
 func ListarUsuarios(contexto *gin.Context) {
 
@@ -81,9 +84,21 @@ type CriarUsuarioResponse struct {
 // BUSCAR USUARIO
 
 func BuscarUsuario(contexto *gin.Context) {
-	contexto.JSON(http.StatusOK, gin.H{
-		"usuarios": "GET usuario por id",
-	})
+	
+	usuario := schemas.Usuario{}
+
+	id := contexto.Param("id")
+
+	if err := db.First(&usuario).Where("id = ?", id); err != nil {
+		sendError(contexto, http.StatusInternalServerError, "Erro ao buscar usuario")
+		return
+	}
+
+	sendSucess(contexto, "buscar-usuario", usuario)
+}
+
+type BuscarUsuarioRequest struct {
+	ID uuid.UUID `json:"id"`
 }
 
 func AtualizarUsuario(contexto *gin.Context) {
